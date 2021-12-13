@@ -5,8 +5,9 @@ fn main() {
     let path = "input/day13";
     let input = fs::read_to_string(path)
         .unwrap();
-    let sections: Vec<&str> = input.trim().split("\n\n").collect();
-    
+    let sections: Vec<&str> = input.trim().split("\r\n\r\n").collect();
+
+    // parse points as list of tuple points
     let points: Vec<(i32, i32)> = 
         sections[0]
             .trim()
@@ -18,6 +19,7 @@ fn main() {
             })
             .collect();
     
+    // parse folds as a point on the first row or column
     let folds: Vec<(i32, i32)> =
         sections[1]
             .trim()
