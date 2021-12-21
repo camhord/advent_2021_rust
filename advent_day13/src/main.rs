@@ -2,31 +2,32 @@ use std::fs;
 use std::collections::HashSet;
 
 fn main() {
-    let path = "input/day13";
+    let path = "input/stresstest";
     let input = fs::read_to_string(path)
         .unwrap();
-    let sections: Vec<&str> = input.trim().split("\r\n\r\n").collect();
+    let sections: Vec<&str> = input.trim().split("\n\n").collect();
 
     // parse points as list of tuple points
-    let points: Vec<(i32, i32)> = 
+    let points: Vec<(i64, i64)> = 
         sections[0]
             .trim()
             .split("\n")
             .filter(|x| x.len() > 1)
             .map(|p| {
                 let point: Vec<&str> = p.trim().split(",").collect(); 
-                (point[0].parse::<i32>().unwrap(), point[1].parse::<i32>().unwrap())
+                println!("{:?}", point);
+                (point[0].parse::<i64>().unwrap(), point[1].parse::<i64>().unwrap())
             })
             .collect();
     
     // parse folds as a point on the first row or column
-    let folds: Vec<(i32, i32)> =
+    let folds: Vec<(i64, i64)> =
         sections[1]
             .trim()
             .split("\n")
             .map(|f| {
                 let parts: Vec<&str> = f.trim().split("=").collect();
-                let value = parts[1].parse::<i32>().unwrap();
+                let value = parts[1].parse::<i64>().unwrap();
                 if parts[0].chars().last().unwrap() == 'x'{
                     return (value, 0)
                 } else {
@@ -36,7 +37,7 @@ fn main() {
             .collect();
     
     // do a fold on the point set, save the result back to the point set, repeat
-    let mut folding_hashset: HashSet<(i32, i32)> = HashSet::from_iter(points.iter().cloned());
+    let mut folding_hashset: HashSet<(i64, i64)> = HashSet::from_iter(points.iter().cloned());
     for fold in folds{
         let folding_set =
             folding_hashset.iter()
@@ -51,14 +52,14 @@ fn main() {
                         return (p.0, fold.1 - (p.1 - fold.1))
                     }
                 })
-                .collect::<Vec<(i32, i32)>>();
+                .collect::<Vec<(i64, i64)>>();
 
         folding_hashset = HashSet::from_iter(folding_set.iter().cloned());
     }
 
     // display output by constructing a plane of spaces and fill in points from folding_hashset with hash chars
-    let x_vals = folding_hashset.iter().map(|p| p.0).collect::<Vec<i32>>();
-    let y_vals = folding_hashset.iter().map(|p| p.1).collect::<Vec<i32>>();
+    let x_vals = folding_hashset.iter().map(|p| p.0).collect::<Vec<i64>>();
+    let y_vals = folding_hashset.iter().map(|p| p.1).collect::<Vec<i64>>();
     let max_x = x_vals.iter().max().unwrap();
     let max_y = y_vals.iter().max().unwrap();
 
